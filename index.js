@@ -1,14 +1,16 @@
-import http from "http";
+import express from "express";
+import { userRouter } from "./src/users/users.js";
 
-const host = "127.0.0.1";
 const port = 4000;
+const app = express();
 
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader("Content-type", "text/plain");
-  res.end("Hello");
+app.get("/hello", (req, res) => {
+  res.send("Привет");
+  res.end();
 });
 
-server.listen(port, host, () => {
-  console.log(`Сервер запущен на ${host}: ${port}`);
+app.use("/users", userRouter);
+
+app.listen(port, () => {
+  console.log(`Сервер запущен на ${port}`);
 });
