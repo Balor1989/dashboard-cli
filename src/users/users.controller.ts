@@ -1,5 +1,6 @@
 import { NextFunction, Response, Request } from "express";
 import { BaseController } from "../common/base.controller";
+import { HTTPError } from "../errors/http-error.class";
 import { LoggerService } from "../logger/logger.service";
 
 export class UserController extends BaseController {
@@ -17,5 +18,6 @@ export class UserController extends BaseController {
 
   public register(req: Request, res: Response, next: NextFunction) {
     this.ok(res, "register");
+    next(new HTTPError(401, "Ошибка при регистрации"));
   }
 }
