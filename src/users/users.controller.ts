@@ -3,13 +3,13 @@ import { inject, injectable } from 'inversify';
 import { BaseController } from '../common/base.controller';
 import { HTTPError } from '../errors/http-error.class';
 import { TYPES } from '../types';
-import 'reflect-metadata';
 import { ILogger } from '../logger/logger.interface';
 import { IUserController } from './user.controller.interface';
 import { UserLoginDto } from './dto/user.login.dto';
 import { UserRegisterDto } from './dto/user.register.dto';
 import { ValidateMiddleware } from '../common/validate.middleware';
-import { IUserService } from './dto/user.service.interface';
+import { IUserService } from './user.service.interface';
+import 'reflect-metadata';
 
 @injectable()
 export class UserController extends BaseController implements IUserController {
@@ -34,7 +34,7 @@ export class UserController extends BaseController implements IUserController {
 		this.ok(res, 'login');
 	}
 
-	public async register(
+	async register(
 		{ body }: Request<{}, {}, UserRegisterDto>,
 		res: Response,
 		next: NextFunction,
