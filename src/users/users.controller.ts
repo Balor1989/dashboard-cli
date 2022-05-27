@@ -8,18 +8,23 @@ import { ILogger } from '../logger/logger.interface';
 import { IUserController } from './user.controller.interface';
 import { UserLoginDto } from './dto/user.login.dto';
 import { UserRegisterDto } from './dto/user.register.dto';
-import { User } from './user.entity';
-import { UserService } from './dto/users.service';
+import { ValidateMiddleware } from '../common/validate.middleware';
+import { IUserService } from './dto/user.service.interface';
 
 @injectable()
 export class UserController extends BaseController implements IUserController {
 	constructor(
 		@inject(TYPES.ILogger) private loggerService: ILogger,
-		@inject(TYPES.UserService) private userService: UserService,
+		@inject(TYPES.UserService) private userService: IUserService,
 	) {
 		super(loggerService);
 		this.bindRoutes([
-			{ path: '/register', method: 'post', func: this.register },
+			{
+				path: '/register',
+				method: 'post',
+				func: this.register,
+				middlewares: [new ValidateMiddleware(UserRegisterDto)],
+			},
 			{ path: '/login', method: 'post', func: this.login },
 		]);
 	}
@@ -36,7 +41,7 @@ export class UserController extends BaseController implements IUserController {
 	): Promise<void> {
 		const result = await this.userService.createUser(body);
 		if (!result) {
-			return next(new HTTPError(444, 'Такой пользователь существует!'));
+			return next(new HTTPError(422, 'Такой пользователь существует!'));
 		}
 		this.ok(res, { email: result.email });
 	}

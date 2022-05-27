@@ -32,7 +32,9 @@ export abstract class BaseController {
 	protected bindRoutes(routes: RouteController[]): void {
 		for (const route of routes) {
 			this.logger.log(`[${route.method}] ${route.path}`);
+			const middleware = route.middlewares?.map((item) => item.execute.bind(item));
 			const handler = route.func.bind(this);
+			const pipeline = middleware ? [...middleware, handler] : handler;
 			this.router[route.method](route.path, handler);
 		}
 	}
