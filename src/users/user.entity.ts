@@ -16,19 +16,20 @@ export class User {
 	get email(): string {
 		return this._email;
 	}
+
 	get name(): string {
 		return this._name;
 	}
+
 	get password(): string {
 		return this._password;
 	}
 
-	public async setPassword(password: string, salt: number): Promise<void> {
-		this._password = await hash(password, Number(salt));
+	public async setPassword(pass: string, salt: number): Promise<void> {
+		this._password = await hash(pass, salt);
 	}
 
-	public async comparePassword(password: string): Promise<boolean> {
-		const result = await compare(password, this._password);
-		return result;
+	public async comparePassword(pass: string): Promise<boolean> {
+		return compare(pass, this._password);
 	}
 }

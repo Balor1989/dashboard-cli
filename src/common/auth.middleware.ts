@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 
 export class AuthMiddleware implements IMiddleware {
 	constructor(private secret: string) {}
+
 	execute(req: Request, res: Response, next: NextFunction): void {
 		if (req.headers.authorization) {
 			jwt.verify(

@@ -55,4 +55,22 @@ describe('User Service', () => {
 		expect(createdUser?.id).toEqual(1);
 		expect(createdUser?.password).not.toEqual('1');
 	});
+
+	it('validateUser - wrong password', async () => {
+		usersRepository.find = jest.fn().mockReturnValueOnce(createdUser);
+		const res = await usersService.validateUser({
+			email: 'test@gmail.com',
+			password: '2',
+		});
+		expect(res).toBeFalsy();
+	});
+
+	it('validateUser - wrong user', async () => {
+		usersRepository.find = jest.fn().mockReturnValueOnce(null);
+		const res = await usersService.validateUser({
+			email: 'test2@gmail.com',
+			password: '2',
+		});
+		expect(res).toBeFalsy();
+	});
 });

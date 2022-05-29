@@ -45,17 +45,17 @@ export class UserController extends BaseController implements IUserController {
 		]);
 	}
 
-	public async login(
+	async login(
 		req: Request<{}, {}, UserLoginDto>,
 		res: Response,
 		next: NextFunction,
 	): Promise<void> {
 		const result = await this.userService.validateUser(req.body);
 		if (!result) {
-			return next(new HTTPError(401, 'Ошибка авторизации', 'login'));
+			return next(new HTTPError(401, 'ошибка авторизации', 'login'));
 		}
-		const token = await this.signJWT(req.body.email, this.configService.get('SECRET'));
-		this.ok(res, { token });
+		const jwt = await this.signJWT(req.body.email, this.configService.get('SECRET'));
+		this.ok(res, { jwt });
 	}
 
 	async register(
@@ -65,7 +65,7 @@ export class UserController extends BaseController implements IUserController {
 	): Promise<void> {
 		const result = await this.userService.createUser(body);
 		if (!result) {
-			return next(new HTTPError(422, 'Такой пользователь существует!'));
+			return next(new HTTPError(422, 'Такой пользователь уже существует'));
 		}
 		this.ok(res, { email: result.email, id: result.id });
 	}
@@ -86,7 +86,7 @@ export class UserController extends BaseController implements IUserController {
 				{
 					algorithm: 'HS256',
 				},
-				(err: string | undefined, token: string | undefined) => {
+				(err: any, token: string) => {
 					if (err) {
 						reject(err);
 					}
